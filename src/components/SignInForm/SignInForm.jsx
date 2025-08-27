@@ -1,19 +1,18 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router";
-import { signUp } from "../../services/authService";
+import { signIn } from "../../services/authService";
 import { UserContext } from "../../contexts/UserContext";
 
-const SignUpForm = () => {
+const SignInForm = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-    passwordConf: "",
   });
   const { setUser } = useContext(UserContext);
   // destructure the formData state to access the variables inside
-  const { username, password, passwordConf } = formData;
+  const { username, password } = formData;
 
   const handleChange = (evt) => {
     setMessage("");
@@ -23,9 +22,9 @@ const SignUpForm = () => {
   const handleSubmit = async (evt) => {
     evt.preventDefault(); // stops the form from refreshing
     try {
-      const newUser = await signUp(formData);
-      setUser(newUser);
-      console.log(newUser);
+      const signInUser = await signIn(formData);
+      setUser(signInUser);
+      console.log(signInUser);
 
       navigate("/");
     } catch (error) {
@@ -34,12 +33,12 @@ const SignUpForm = () => {
   };
 
   const isFormInvalid = () => {
-    return !(username && password && password === passwordConf);
+    return !(username && password);
   };
 
   return (
     <main>
-      <h1>Sign Up</h1>
+      <h1>Sign In</h1>
       <p>{message}</p>
       <form onSubmit={handleSubmit}>
         <div>
@@ -67,19 +66,7 @@ const SignUpForm = () => {
         </div>
 
         <div>
-          <label htmlFor="confirm">Confirm Password:</label>
-          <input
-            type="password"
-            id="confirm"
-            name="passwordConf"
-            value={passwordConf}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div>
-          <button disabled={isFormInvalid()}>Sign up</button>
+          <button disabled={isFormInvalid()}>Sign In</button>
           <button onClick={() => navigate("/")}>Cancel</button>
         </div>
       </form>
@@ -87,4 +74,4 @@ const SignUpForm = () => {
   );
 };
 
-export default SignUpForm;
+export default SignInForm;
